@@ -1,7 +1,11 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, Page } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
+import { HeaderPage } from '../pages/header.page';
 
-test.beforeEach(async ({ page }) => {
+let page: Page
+
+test.beforeEach(async ({ context }) => {
+    page = await context.newPage()
     await page.goto('https://buggy.justtestit.org', {
         waitUntil: 'load'
     })
@@ -9,23 +13,29 @@ test.beforeEach(async ({ page }) => {
     await expect(page.locator("a >> text='Buggy Rating'")).toBeVisible()
 })
 
+test.afterEach(async ({ context }) => {
+    await context.close()
+})
+
 test.describe('Buggy Car Rating - E2E Tests', () => {
     test.describe('Login validation', () => {
-        test('should able to login with valid credentials', async ({ page }) => {
-            await page.locator("[placeholder='Login']").fill('testuser.234')
-            await page.locator("[name='password']").fill('Abcd.123')
-            await page.locator("text='Login'").click()
-            await expect(page.locator("text='Profile'")).toBeVisible()
-            await expect(page.locator("text='Logout'")).toBeVisible()
+        let header: HeaderPage
+
+        test.beforeEach(() => {
+             header = new HeaderPage(page)
+        })
+
+        test('should able to login with valid credentials', async () => {
+            await header.login('testuser.234', 'Abcd.123')
+            await expect(header.profileBtn).toBeVisible()
+            await expect(header.logoutBtn).toBeVisible()
         })
     
-        test('should not be able to login with invalid credentials', async ({ page }) => {
-            await page.locator("[placeholder='Login']").fill('invalid')
-            await page.locator("[name='password']").fill('invalid')
-            await page.locator("text='Login'").click()
-            await expect(page.locator("text='Invalid username/password'")).toBeVisible()
-            await expect(page.locator("text='Profile'")).not.toBeVisible()
-            await expect(page.locator("text='Logout'")).not.toBeVisible()
+        test('should not be able to login with invalid credentials', async () => {
+            await header.login('invalid', 'invalid')
+            await expect(header.errorMessageTxt).toBeVisible()
+            await expect(header.profileBtn).not.toBeVisible()
+            await expect(header.logoutBtn).not.toBeVisible()
         })
     })
 
