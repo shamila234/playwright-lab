@@ -47,7 +47,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             password: 'Abcd.123'
         }
 
-        test('should be able to successfully register a new user', async ({ page }) => {
+        test('should be able to successfully register a new user', async () => {
             await page.locator("text='Register'").click()
             await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
@@ -76,7 +76,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             await expect(page.locator("text='Registration is successful'")).toBeVisible()
         })
 
-        test('should cancel return back to home page', async ({ page }) => {
+        test('should cancel return back to home page', async () => {
             await page.locator("text='Register'").click()
             await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
@@ -87,7 +87,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             expect(page.url()).toEqual('https://buggy.justtestit.org/')
         })
 
-        test('Register button should be disabled by default on page load', async ({ page }) => {
+        test('Register button should be disabled by default on page load', async () => {
             await page.locator("text='Register'").click()
             await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
@@ -95,7 +95,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             await expect(page.locator("button:has-text('Register')")).toBeDisabled()
         })
 
-        test('should not allow new user to register with an existing username', async ({ page }) => {
+        test('should not allow new user to register with an existing username', async () => {
             await page.locator("text='Register'").click()
             await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
@@ -113,7 +113,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
     })
 
     test.describe('Car voting validations', () => {
-        test('should be able to vote for a selected model', async ({ page }) => {
+        test('should be able to vote for a selected model', async () => {
             page.route('**/token', route => {
                 route.fulfill({
                     body: JSON.stringify({
