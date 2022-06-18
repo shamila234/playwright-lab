@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { HeaderPage } from '../pages/header.page';
+import { RegisterPage } from '../pages/register.page';
 
 let page: Page
 
@@ -40,6 +41,14 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
     })
 
     test.describe('Register page validations', () => {
+        let header: HeaderPage
+        let registerPage: RegisterPage
+
+        test.beforeEach(() => {
+             header = new HeaderPage(page)
+             registerPage = new RegisterPage(page)
+        })
+
         const registrationDetails = {
             username: uuidv4(),
             firstName: 'Aamir',
@@ -48,8 +57,8 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
         }
 
         test('should be able to successfully register a new user', async () => {
-            await page.locator("text='Register'").click()
-            await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
+            await header.registerBtn.click()
+            await expect(registerPage.registerPageLbl).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
             
             page.route('**/users', route => {
@@ -65,50 +74,49 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
                 }))
             })
 
-            await page.locator("[id='username']").fill(registrationDetails.username)
-            await page.locator("[id='firstName']").fill(registrationDetails.firstName)
-            await page.locator("[id='lastName']").fill(registrationDetails.lastName)
-            await page.locator("[id='password']").fill(registrationDetails.password)
-            await page.locator("[id='confirmPassword']").fill(registrationDetails.password)
-            await expect(page.locator("button:has-text('Register')")).toBeEnabled()
-            await page.locator("button:has-text('Register')").click()
+            await registerPage.fillRegistrationDetails({
+                ...registrationDetails,
+                confirmPassword: registrationDetails.password
+            })
+            await expect(registerPage.registerBtn).toBeEnabled()
+            await registerPage.registerBtn.click()
             
-            await expect(page.locator("text='Registration is successful'")).toBeVisible()
+            await expect(registerPage.registerSuccessLbl).toBeVisible()
         })
 
         test('should cancel return back to home page', async () => {
-            await page.locator("text='Register'").click()
-            await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
+            await header.registerBtn.click()
+            await expect(registerPage.registerPageLbl).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
 
-            await page.locator("a:has-text('Cancel')").click()
+            await registerPage.cancelBtn.click()
             
             await expect(page.locator("text=Buggy Rating Login Register BuggyCarsRating >> img")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/')
         })
 
         test('Register button should be disabled by default on page load', async () => {
-            await page.locator("text='Register'").click()
+            await header.registerBtn.click()
             await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
 
-            await expect(page.locator("button:has-text('Register')")).toBeDisabled()
+            await expect(registerPage.registerBtn).toBeDisabled()
         })
 
         test('should not allow new user to register with an existing username', async () => {
-            await page.locator("text='Register'").click()
+            await header.registerBtn.click()
             await expect(page.locator("text='Register with Buggy Cars Rating'")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
 
-            await page.locator("[id='username']").fill('testuser.234')
-            await page.locator("[id='firstName']").fill(registrationDetails.firstName)
-            await page.locator("[id='lastName']").fill(registrationDetails.lastName)
-            await page.locator("[id='password']").fill(registrationDetails.password)
-            await page.locator("[id='confirmPassword']").fill(registrationDetails.password)
-            await expect(page.locator("button:has-text('Register')")).toBeEnabled()
-            await page.locator("button:has-text('Register')").click()
+            await registerPage.fillRegistrationDetails({
+                ...registrationDetails,
+                username: 'testuser.234',
+                confirmPassword: registrationDetails.password
+            })
+            await expect(registerPage.registerBtn).toBeEnabled()
+            await registerPage.registerBtn.click()
 
-            await expect(page.locator("text='UsernameExistsException: User already exists'")).toBeVisible()
+            await expect(registerPage.registerFailureLbl).toBeVisible()
         })
     })
 
