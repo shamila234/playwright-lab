@@ -1,2 +1,2 @@
-# playwright-playground
+# playwright-lab
 Playwright automation and testing playground
