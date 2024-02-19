@@ -1,26 +1,27 @@
 {
-  "name": "playwright-lab",
-  "version": "1.0.0",
-  "description": "Playwright automation and testing experiments",
-  "scripts": {
-    "test": "npx playwright test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shamila234/playwright-lab.git"
-  },
-  "keywords": [],
-  "author": "Shamila Wijekoon",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/shamila234/playwright-lab/issues"
-  },
-  "homepage": "https://github.com/shamila234/playwright-lab#readme",
-  "devDependencies": {
-    "@playwright/test": "^1.22.2",
-    "@types/uuid": "^8.3.4"
-  },
-  "dependencies": {
-    "uuid": "^8.3.2"
-  }
+	"name": "playwright-lab",
+	"version": "1.0.0",
+	"description": "Playwright automation and testing experiments",
+	"scripts": {
+		"test": "npx playwright test"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/shamila234/playwright-lab.git"
+	},
+	"keywords": [],
+	"author": "Shamila Wijekoon",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/shamila234/playwright-lab/issues"
+	},
+	"homepage": "https://github.com/shamila234/playwright-lab#readme",
+	"devDependencies": {
+		"@playwright/test": "^1.41.2",
+		"@types/node": "^20.11.19",
+		"@types/uuid": "^9.0.8"
+	},
+	"dependencies": {
+		"uuid": "^9.0.1"
+	}
 }
