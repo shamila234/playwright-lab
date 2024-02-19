@@ -8,37 +8,37 @@ export class HeaderPage extends BasePage {
 
     public get usernameTxt(): Locator {
         const usernameTxt = this.page.locator("[placeholder='Login']")
-        if ( usernameTxt == null) {
-            throw new Error('No element found') 
+        if (usernameTxt == null) {
+            throw new Error('No element found')
         }
-        
+
         return usernameTxt
     }
 
     public get passwordTxt(): Locator {
         const passwordTxt = this.page.locator("[name='password']")
-        if ( passwordTxt == null) {
-            throw new Error('No element found') 
+        if (passwordTxt == null) {
+            throw new Error('No element found')
         }
-        
+
         return passwordTxt
     }
 
     public get loginBtn(): Locator {
         const loginBtn = this.page.locator("text='Login'")
         if (loginBtn == null) {
-            throw new Error('No element found') 
+            throw new Error('No element found')
         }
-        
+
         return loginBtn
     }
-    
+
     public get registerBtn(): Locator {
         const registerBtn = this.page.locator("text='Register'")
         if (registerBtn == null) {
-            throw new Error('No element found') 
+            throw new Error('No element found')
         }
-        
+
         return registerBtn
     }
 
@@ -69,7 +69,8 @@ export class HeaderPage extends BasePage {
         return logoutBtn
     }
 
-    async login(username: string, password: string): Promise<void> {
+    async login(username: string | undefined, password: string | undefined): Promise<void> {
+        if (!username || !password) throw new Error('No credentials provided')
         await this.usernameTxt.fill(username)
         await this.passwordTxt.fill(password)
         await this.loginBtn.click()
