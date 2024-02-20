@@ -19,7 +19,8 @@
 	"devDependencies": {
 		"@playwright/test": "^1.41.2",
 		"@types/node": "^20.11.19",
-		"@types/uuid": "^9.0.8"
+		"@types/uuid": "^9.0.8",
+		"dotenv": "^16.4.4"
 	},
 	"dependencies": {
 		"uuid": "^9.0.1"

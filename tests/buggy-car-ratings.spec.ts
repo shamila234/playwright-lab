@@ -2,6 +2,7 @@ import { test, expect, Page } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { HeaderPage } from '../pages/header.page';
 import { RegisterPage } from '../pages/register.page';
+import { testPassword, testUserName } from '../playwright.config';
 
 let page: Page
 
@@ -23,15 +24,15 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
         let header: HeaderPage
 
         test.beforeEach(() => {
-             header = new HeaderPage(page)
+            header = new HeaderPage(page)
         })
 
         test('should able to login with valid credentials', async () => {
-            await header.login('testuser.234', 'Abcd.123')
+            await header.login(testUserName, testPassword)
             await expect(header.profileBtn).toBeVisible()
             await expect(header.logoutBtn).toBeVisible()
         })
-    
+
         test('should not be able to login with invalid credentials', async () => {
             await header.login('invalid', 'invalid')
             await expect(header.errorMessageTxt).toBeVisible()
@@ -45,8 +46,8 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
         let registerPage: RegisterPage
 
         test.beforeEach(() => {
-             header = new HeaderPage(page)
-             registerPage = new RegisterPage(page)
+            header = new HeaderPage(page)
+            registerPage = new RegisterPage(page)
         })
 
         const registrationDetails = {
@@ -60,7 +61,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             await header.registerBtn.click()
             await expect(registerPage.registerPageLbl).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
-            
+
             page.route('**/users', route => {
                 route.fulfill({
                     body: JSON.stringify({}),
@@ -80,7 +81,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             })
             await expect(registerPage.registerBtn).toBeEnabled()
             await registerPage.registerBtn.click()
-            
+
             await expect(registerPage.registerSuccessLbl).toBeVisible()
         })
 
@@ -90,7 +91,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             expect(page.url()).toEqual('https://buggy.justtestit.org/register')
 
             await registerPage.cancelBtn.click()
-            
+
             await expect(page.locator("text=Buggy Rating Login Register BuggyCarsRating >> img")).toBeVisible()
             expect(page.url()).toEqual('https://buggy.justtestit.org/')
         })
@@ -110,7 +111,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
 
             await registerPage.fillRegistrationDetails({
                 ...registrationDetails,
-                username: 'testuser.234',
+                username: testUserName,
                 confirmPassword: registrationDetails.password
             })
             await expect(registerPage.registerBtn).toBeEnabled()
@@ -150,14 +151,14 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
                     body: JSON.stringify({
                         canVote: true,
                         comments: [],
-                        description: "The style of the *Mito* lives up to the latest news from the Alfa Romeo family in design, onboard experience and in its performance too.\n\nIn this way, the smallest Alfa Romeo sporty car hasn’t just grown-up: it has become grandiose.\n\nStrength and agility are Mito’s strong points. To provide them, Alfa Romeo engineers worked hard on every element of the car, to ensure only the best performance.",
+                        description: "Mocked description",
                         engineVol: 1.4,
-                        image: "mito.jpg",
-                        make: "Alfa Romeo",
-                        makeId: "c4u1mqnarscc72is00ng",
-                        makeImage: "AR-logo.jpg",
+                        image: "mock.jpg",
+                        make: "Mocked Model",
+                        makeId: "fakeId1",
+                        makeImage: "MockLogo.jpg",
                         maxSpeed: 219,
-                        name: "Mito",
+                        name: "Mock",
                         votes: 1549,
                     }),
                     contentType: 'application/json',
@@ -173,7 +174,7 @@ test.describe('Buggy Car Rating - E2E Tests', () => {
             await page.locator("[name='password']").fill('test')
             await page.locator("text='Login'").click()
             await page.locator("text=Overall Rating List of all registered models. >> img").click()
-            await page.locator("text=Mito").click()
+            await page.locator("table.cars tbody tr").first().locator("td.thumbnail").click()
             await expect(page.locator("[id='comment']")).toBeVisible()
             await expect(page.locator("button:has-text('Vote!')")).toBeEnabled()
             page.unroute('**/models/*')
